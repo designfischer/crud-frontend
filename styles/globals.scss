@@ -218,38 +218,3 @@ button {
 .input__first {
   margin-bottom: 25px;
 }
-
-.modal {
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 5;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__content {
-    background: white;
-    max-width: 750px;
-    width: 100%;
-    min-height: 300px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    z-index: 10;
-    position: relative;
-
-    button {
-      position: absolute;
-      bottom: -50px;
-      border-radius: 0;
-    }
-  }
-}

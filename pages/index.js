@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 
 import InputGroup from "../components/input";
@@ -7,6 +7,9 @@ import Card from "../components/card";
 import { apiFetch } from "../services";
 
 export default function Home(props) {
+
+  
+
   const [books, setBooks] = useState(props.props);
 
   const [name, setName] = useState("");
@@ -16,12 +19,40 @@ export default function Home(props) {
   const [category, setCategory] = useState("");
   const [releaseYear, setReleaseYear] = useState(2020);
   const [price, setPrice] = useState(0.0);
+  const [bookId, setBookId] = useState('')
 
   const [isLoading, setLoading] = useState(false);
-
+  
   async function createBook(e) {
     e.preventDefault();
     setLoading(true);
+    await postBookData()
+  }
+
+  async function getBooks() {
+    try {
+      const books = await apiFetch.get("/books");
+      setBooks(books.data);
+    } catch (err) {
+      alert("Não foi possível obter a lista atualizada de livros");
+      setBooks(props.props);
+    }
+  }
+
+  async function deleteBook(book_id) {
+    setLoading(true);
+    try {
+      await apiFetch.delete(`/books/${book_id}`);
+      alert("Livro removido com sucesso!");
+      await getBooks();
+      setLoading(false);
+    } catch (err) {
+      alert("Erro ao remover livro. Tente novamente");
+      setLoading(false);
+    }
+  }  
+  
+  async function postBookData() {
     try {
       await apiFetch.post("/books", {
         name,
@@ -44,29 +75,6 @@ export default function Home(props) {
       setLoading(false);
     } catch (err) {
       alert("Não foi possível cadastrar o livro!");
-      setLoading(false);
-    }
-  }
-
-  async function getBooks() {
-    try {
-      const books = await apiFetch.get("/books");
-      setBooks(books.data);
-    } catch (err) {
-      alert("Não foi possível obter a lista atualizada de livros");
-      setBooks(props.props);
-    }
-  }
-
-  async function deleteBook(book_id) {
-    setLoading(true);
-    try {
-      await apiFetch.delete(`/books/${book_id}`);
-      alert("Livro removido com sucesso!");
-      await getBooks();
-      setLoading(false);
-    } catch (err) {
-      alert("Erro ao remover livro. Tente novamente");
       setLoading(false);
     }
   }
@@ -136,11 +144,11 @@ export default function Home(props) {
                   set_value={setPrice}
                 />
               </div>
-              {isLoading ? (
-                <p className="sending">Enviando...</p>
-              ) : (
-                <button onClick={createBook}>Adicionar Livro</button>
-              )}
+              {                 
+                isLoading ? 
+                  <p className="sending">Enviando...</p> :
+                  <button onClick={createBook}>Adicionar Livro</button>
+              }              
             </form>
           </div>
           <div className="content__body">
@@ -156,8 +164,11 @@ export default function Home(props) {
                 book_price={book.price}
                 handle_delete={() => {
                   deleteBook(book._id);
-                }}
-                is_loading={isLoading}
+                }}    
+                handle_update={() => {
+                  getSelectedBookData(book)
+                }}            
+                is_loading={isLoading}                
               />
             ))}
           </div>

@@ -8,10 +8,10 @@ function Card({
   book_isbn,
   book_category,
   book_price,
-  handle_delete,
-  handle_update,
-  is_loading,
-}) {
+  handle_delete,  
+  is_loading
+}) {  
+
   return (
     <>
       <div className="card">
@@ -37,7 +37,7 @@ function Card({
           <h2>{`R$ ${book_price}`}</h2>
         </div>
         <div className="card__actions">
-          <button onClick={handle_update}>Editar</button>
+          <button>Editar</button>
           {is_loading ? (
             <div>
               <p>Removendo...</p>
@@ -48,7 +48,7 @@ function Card({
             </button>
           )}
         </div>
-      </div>
+      </div>      
     </>
   );
 }
